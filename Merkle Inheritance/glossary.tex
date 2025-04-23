@@ -1,0 +1,59 @@
+\newglossaryentry{CAMS}{
+  name={content-addressed module system},
+  description={A module system where each module is uniquely identified by the cryptographic hash of its content and its declared dependencies. This guarantees immutability and supports decentralized resolution, verification, and reproducibility}
+}
+
+\newglossaryentry{MerkleTree}{
+  name={Merkle tree},
+  description={A cryptographic data structure where each non-leaf node is a hash of its children. Used for content verification and ancestry tracking in the module system.}
+}
+
+\newglossaryentry{Finalization}{
+  name={finalization},
+  description={The process of resolving all symbolic references in a module to their content-addressed identities, yielding a fully closed Merkle root.}
+}
+
+\newglossaryentry{SemanticVersioning}{
+  name={Semantic Versioning (semver)},
+  description={A versioning scheme using major, minor, and patch numbers (e.g., 1.2.3), often used for compatibility tracking in package managers.}
+}
+
+\newglossaryentry{DHT}{
+  name={distributed hash table},
+  description={A decentralized storage layer that maps content hashes or identifiers to locations or values across a peer-to-peer network.}
+}
+
+\newglossaryentry{Resolution}{
+  name={resolution},
+  description={The process of binding a symbolic identifier to its fully qualified content-addressed definition within the current ancestry context.}
+}
+
+\newglossaryentry{ContentAddressing}{
+  name={content addressing},
+  description={Identifying data by its hash rather than by name or location, allowing for immutable and verifiable references.}
+}
+
+\newglossaryentry{Shadowing}{
+  name={shadowing},
+  description={When a child module defines a symbol that overrides or hides a symbol from an ancestor module during inheritance.}
+}
+
+\newglossaryentry{AncestryGraph}{
+    name={ancestry graph},
+    description={A directed acyclic graph (DAG) representing the inheritance and dependency relationships between modules. Each node corresponds to a module, and each edge indicates an import or inheritance link. The ancestry graph is used during resolution to determine the order in which modules and symbols are composed or overridden.}
+}
+
+\newglossaryentry{Provenance}{
+    name={provenance},
+    description={The origin and historical lineage of a module or data artifact. In content-addressed systems, provenance includes the ancestry chain of dependencies, authorship, and the verifiable transformations that led to a module's current state. Provenance supports auditability, reproducibility, and trust in distributed systems}
+}
+
+\newglossaryentry{HashBomb}{
+  name={hash bomb},
+  description={A malicious module structure designed to overwhelm a resolution engine by creating an extremely large number of distinct but structurally similar hashes, often through slight content variations, leading to excessive memory or compute consumption during Merkle tree construction or verification}
+}
+
+\newglossaryentry{ExcessiveFanout}{
+  name={excessive fan-out},
+  description={A pathological module structure in which a single module imports an unusually large number of immediate dependencies, increasing the risk of performance degradation or denial-of-service during resolution}
+}
