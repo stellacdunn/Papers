@@ -10,6 +10,8 @@
 \usepackage{listings}
 \usepackage{etoolbox}
 \apptocmd{\thebibliography}{\raggedright}{}{}
+\usepackage{xr}
+\externaldocument[supp-]{supplementary}
 \usepackage{geometry}
 \geometry{margin=1in}
 \usepackage{tikz}
@@ -37,7 +39,6 @@
     breaklines=true,
     frame=lines
 }
-
 
 \title{Merkle Tree-Based Inheritance in Decentralized Module Systems}
 
@@ -821,25 +822,14 @@ Typ\-ed ecosystems can optionally perform type compatibility checks at resolutio
 Modules may provide inline or sidecar type annotations, allowing downstream tools or runtimes to validate that symbols match their declared types. For example, if \texttt{moduleA} exports a function \texttt{compute()} with signature \texttt{Int $\to$ Int}, any modules inheriting or re-exporting it must preserve this type unless explicitly widened or aliased.
 
 \paragraph{Generic Type Support}
-Typed ecosystems may adopt \emph{generic type aliases} and structural type constraints to define parametric modules or enforce interface-like requirements across inheritance trees. These mechanisms are sketched in Appendix~\ref{appendix:generics} and align with the semantics of finalization and override resolution.
+Typed ecosystems may adopt \emph{generic type aliases} and structural type constraints to define parametric modules or enforce interface-like requirements across inheritance trees. These mechanisms are sketched in Appendix~\ref{supp-appendix:generics} and align with the semantics of finalization and override resolution.
 
 By enabling early detection of type mismatches and supporting structural compatibility guarantees, the system provides a pathway to scalable, decentralized type safety. This approach is particularly useful for ecosystems seeking to layer formal validation atop content-addressed distribution.
 
 As discussed in Section~\ref{sec:future-work}, future work includes implementing richer type inference mechanisms, subtyping hierarchies, and generics-aware resolution, enabling even more robust type integration across distributed modules.
 
-\section{Connection to Existing Module Calculi}
-While module systems are a core part of programming language design, they have traditionally been focused on managing symbols, namespaces, and dependencies within single programs. Our approach, inspired by decentralized systems and Merkle trees, extends the concept of module systems to handle decentralized inheritance and dependency resolution in a secure and deterministic way. This positions our work within the broader context of module calculi, which formalize how modules and their interdependencies are managed.
-
-One notable family of module systems that our approach aligns with are higher-order module calculi, such as ML's module system \cite{mitchell1988modules}, which provides a rich framework for module abstraction, parametrization, and inter\-face-based separation of concerns. However, our approach diverges from these systems by prioritizing decentralized, content-addressable resolution mechanisms over traditional module abstractions.
-
-In particular, our work is closely related to the mixin calculus \cite{castagna1993mixin}, which formalizes the combination of multiple module definitions and handles module inheritance in a way that ensures both type soundness and modularity. Our use of Merkle trees for symbolic resolution and inheritance can be seen as a natural extension to the mixin calculus, ensuring a conflict-free resolution order and deterministic inheritance traces. By explicitly tracking module relationships in a Merkle tree, our system guarantees consistency even in the face of the diamond problem, where multiple inheritance paths may otherwise cause ambiguity.
-
-Moreover, existing module calculi tend to treat modules as first-class citizens but do not typically incorporate the concepts of content-addressability and cryptographic verification that are central to decentralized systems. Our approach introduces a new level of determinism by resolving symbol inheritance in a cryptographically secure manner, ensuring that the resolution order is explicitly defined and traceable, even in distributed environments.
-
-\subsection{Future Work}
-One natural direction for future work is to extend this system to a full higher-order module calculus, providing more expressive features such as parametric polymorphism and type classes. While higher-order modules are not the focus of this paper, they could be integrated into this framework by extending the resolution mechanisms to handle function modules and modules that generate other modules as first-class entities. This would expand the system's flexibility and allow for the full expressiveness of higher-order module calculi, as seen in ML \cite{mitchell1988modules} and other advanced module systems.
-
-Additionally, this work could be extended to more sophisticated type systems, including recursive types and more advanced polymorphism, to support richer module ecosystems. These extensions would be especially relevant in the context of decentralized platforms that rely on flexibility and modularity to accommodate complex software systems. A roadmap for these extensions will be outlined as future work in the broader scope of module calculus design.
+\paragraph{Connections to Module Calculi.}
+Our system is not itself a formal module calculus, but it draws on key ideas from foundational work on ML-style modules~\cite{ml_modules} and the mixin calculus~\cite{mixin_calculus}. In particular, it supports compositionality, deterministic symbol resolution, and (optionally) generic module interfaces. Detailed discussion of its relationship to these calculi, and the requirements for supporting features like higher-order modules and recursive types, is provided in the supplementary materials (Appendix~\ref{supp-appendix:module-calculi}).
 
 \section{Namespace-Based Registry}
 \label{sec:namespace-based-registry}
@@ -1721,132 +1711,61 @@ While SHA-256 currently provides strong preimage and collision resistance, long-
 
 Future work includes evaluating these alternative hashing algorithms for suitability in content-addressed module systems, focusing on compatibility with Merkle tree constructions, registry performance, and adoption viability. Additionally, migration strategies may be developed to support gradual transition between hash functions, including hybrid hash encoding schemes or dual-hash identifiers that preserve backward compatibility while enabling forward security. By future-proofing the core cryptographic primitives of the system, we aim to maintain integrity guarantees even in the face of emerging threats.
 
+\section{CI/CD and VCS Integration (Supplementary)}
+\label{sec:ci-vcs-integration}
+
+A detailed discussion of how the proposed system integrates with continuous integration (CI) workflows and version control systems (VCS), including semantic conflict detection, immutable tagging, and cache-aware builds, is included in the supplementary materials (Appendix~\ref{supp-appendix:ci-vcs}).
+
 \section{Evaluation and Testing Methodology}
 \label{sec:evaluation}
 
-We present both a set of synthetic benchmarks that demonstrate the scalability and efficiency of our Merkle-based inheritance model, and a detailed testing plan to guide future empirical validation once a full prototype is implemented. The synthetic results illustrate expected asymptotic behavior, while the methodology outlines how real-world performance will be evaluated in practice.
+We outline the evaluation goals and empirical validation plan for our Merkle-based module system. While a full implementation is still in development, we report preliminary findings based on synthetic data and provide a roadmap for testing real-world performance, scalability, and usability. Complete benchmark configurations, generated results, and synthetic graph structures are provided in the supplementary materials.
 
-\subsection{Synthetic Evaluation}
-\label{sec:synthetic-evaluation}
+\subsection{Evaluation Goals}
 
-To demonstrate the tractability of our model, we constructed synthetic benchmarks over fabricated module graphs with varying topologies. These include:
-
-\begin{itemize}
-  \item \textbf{Linear inheritance chains} to stress deep ancestry resolution.
-  \item \textbf{Wide graphs} with shared base modules to test structural deduplication.
-  \item \textbf{Diamond graphs} to simulate shadowing and merge paths.
-\end{itemize}
-
-Each module contains $N$ symbols and inherits from $k$ parents, where $N \in [10, 1000]$ and $k \in [1, 10]$. Benchmarked operations include:
+Our evaluation strategy targets the following questions:
 
 \begin{itemize}
-  \item \textbf{Finalization Time:} Computing the Merkle root and resolution order.
-  \item \textbf{Symbol Resolution Time:} Fetch and resolve a randomly selected symbol.
-  \item \textbf{Graph Compression:} Space reduction from \\structural sharing.
+  \item How does resolution performance scale with graph width, depth, and ancestry reuse?
+  \item How robust is the system under partial failures or adversarial input?
+  \item Can inheritance semantics preserve determinism and modularity in practice?
 \end{itemize}
 
-\paragraph{Synthetic Benchmark Disclaimer}
-These results are generated from a simulated interpreter and do not reflect runtime behavior of a full implementation. They are meant to illustrate the model's feasibility and efficiency under plausible workloads and will be replaced with empirical data once a full system is implemented and tested.
+These goals inform the benchmarks and testing workflows we prioritize.
 
-\paragraph{Results Summary}
+\subsection{Prototype Development}
+
+We will implement a reference prototype in \texttt{Rust}~\cite{rust} using \texttt{libp2p}~\cite{libp2p} for decentralized communication and \texttt{Wasmer}~\cite{wasmer} for WebAssembly execution. This prototype will serve as the basis for full-scale empirical validation.
+
+\subsection{Future Testing Plan}
+
+Empirical testing will evaluate:
 
 \begin{itemize}
-  \item \textbf{Finalization scales linearly} with total symbols and parents: a 1000-symbol, 10-parent module finalizes in under 120ms.
-  \item \textbf{Symbol resolution remains logarithmic} even in the worst case, staying under 1ms.
-  \item \textbf{Graph compression reduces node count by 60--80\%} in shared-ancestor graphs.
+  \item Latency and memory usage across large dependency graphs.
+  \item Resolution correctness under stale caches and node dropout.
+  \item Conflict handling in symbol shadowing and multi-parent inheritance.
+  \item Developer-facing tooling for visualization, debugging, and traceability.
 \end{itemize}
 
-These benchmarks suggest our resolution semantics are compatible with large-scale module graphs.
+Testing will simulate real-world workflows (e.g., CI/CD, interactive development) to assess usability and performance.
 
-\subsection{Prototype Development Plan}
+\subsection{Supplementary Benchmarks and Testing Scenarios}
+\label{sec:supplementary-benchmarks}
 
-We plan to implement a reference prototype in \texttt{Rust}~\cite{rust}, using \texttt{libp2p}~\cite{libp2p} for peer-to-peer networking and \\\texttt{Wasmer}~\cite{wasmer} for WebAssembly execution. This prototype will support real-world testing across performance, reliability, and developer tooling.
-
-\subsection{Scalability Testing}
-
-Our empirical testing will evaluate:
+Detailed benchmark results from synthetic module graphs, as well as comparative analyses with existing tools (e.g., \texttt{npm}, \texttt{Cargo}, \texttt{pip}), are available in the supplementary materials. These include:
 
 \begin{itemize}
-  \item Latency of module resolution across nested and wide hierarchies.
-  \item Caching efficiency under parallel, distributed \\workloads.
-  \item Overhead from content-addressed Merkle ancestry and finalization.
+  \item Synthetic benchmarks on finalization, symbol resolution, and structural compression.
+  \item Stress tests for network partitioning, stale ancestry, and fallback performance.
+  \item Metrics such as average DHT hops, cache hit rates, and deduplication efficiency.
+  \item Simulated workflows including dependency graph rebuilding and distributed editing.
 \end{itemize}
 
-\subsection{Fault Tolerance and Network Resilience}
+These results offer preliminary insights into the system's expected behavior and scalability.
 
-We will simulate:
-
-\begin{itemize}
-  \item Network partitioning and failure during resolution.
-  \item Stale ancestry in peer caches.
-  \item Timeout and fallback mechanisms.
-\end{itemize}
-
-\subsection{Real-World Development Scenarios}
-
-Scenario-based testing will simulate:
-
-\begin{itemize}
-  \item Rebuilding dependency graphs after updates.
-  \item Incremental resolution performance.
-  \item Ambiguity or conflict in inherited symbol paths.
-\end{itemize}
-
-\subsection{Security and DoS Testing}
-
-We will test for resilience against:
-
-\begin{itemize}
-  \item DoS via high fan-out or cyclic graphs.
-  \item Sybil attacks through ancestry aliasing.
-  \item Strategic DHT dropout or module pruning.
-\end{itemize}
-
-\subsection{Tooling and Usability Testing}
-
-We will measure:
-
-\begin{itemize}
-  \item Performance and diagnostics of CLI tools.
-  \item Symbol tracing and ancestry previews in IDEs.
-  \item Developer-facing error feedback and recoverability.
-\end{itemize}
-
-\subsection{Comparative Benchmarks}
-\label{sec:impl-benchmarks}
-
-We will compare our system against existing tools (e.g., \texttt{npm}, \texttt{Cargo}, \texttt{pip}) in tasks like:
-
-\begin{itemize}
-  \item Cold-start and warm-start resolution.
-  \item Cache reuse and deduplication under transitive upgrades.
-  \item Registry fetches and DHT hop behavior.
-\end{itemize}
-
-\subsection{Proposed Metrics}
-\label{sec:proposed-metrics}
-
-Quantitative metrics will include:
-
-\begin{itemize}
-  \item Average DHT hops per resolved module.
-  \item Cache hit/miss rates during resolution.
-  \item Resolution time for typical graph shapes.
-  \item Fallback rates under partial availability.
-\end{itemize}
-
-\subsection{Scenario Workflows}
-\label{sec:evaluation-metrics}
-
-We will evaluate the system in workflows such as:
-
-\begin{itemize}
-  \item \textbf{CI/CD Pipelines:} Cold builds, dependency invalidation.
-  \item \textbf{Interactive Development:} Tracing ancestry and debugging conflicts.
-  \item \textbf{Distributed Teams:} Resolution under high churn and modular forks.
-\end{itemize}
-
-These workflows ensure the benchmarks map to realistic usage patterns in modern development environments.
+\paragraph{Supplementary Materials.}
+Due to space constraints, full details of our synthetic benchmark methodology, prototype development plan, and empirical evaluation scenarios are provided in the supplementary materials. These include synthetic results, proposed metrics, testing workflows, and comparative analysis with existing systems.
 
 \section{Future Work}
 \label{sec:future-work}
@@ -1861,7 +1780,7 @@ While our model provides a foundation for reproducible, compositional module sem
 
 \paragraph{Decentralized Compilation and Governance} Compiler stages: parsers, optimizers, and linkers, can be modeled as Merkle-rooted modules, allowing decentralized, reproducible build pipelines. Decentralized governance mechanisms, including publishing delegation, dispute resolution, and revocation signaling, will be critical for registry integrity.
 
-\paragraph{Type Systems and Verification} Typed ecosystems can adopt structural and parametric constraints (Section~\ref{sec:type-system-integration}, Appendix~\ref{appendix:generics}), enabling interface-like module signatures. Future work includes formalizing resolution semantics using proof-theoretic or denotational models, enabling machine-checked proofs of determinism, monotonicity, and compositionality.
+\paragraph{Type Systems and Verification} Typed ecosystems can adopt structural and parametric constraints (Section~\ref{sec:type-system-integration}, Appendix~\ref{supp-appendix:generics}), enabling interface-like module signatures. Future work includes formalizing resolution semantics using proof-theoretic or denotational models, enabling machine-checked proofs of determinism, monotonicity, and compositionality.
 
 \paragraph{Higher-Order Modules} Fully supporting higher-\\order modules would allow modules to accept other modules as parameters or return modules as results, enabling advanced patterns of module interaction and composition. This would enhance flexibility and abstraction power, making the system more suitable for complex, modular programming paradigms.
 
@@ -1883,46 +1802,5 @@ While our model provides a foundation for reproducible, compositional module sem
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{bibliography}
-
-\appendix
-\section{Generic Types and Structural Constraints}
-\label{appendix:generics}
-
-Though type-agnostic by design, the system accommodates ecosystems with parametric polymorphism and structural typing. This appendix outlines optional extensions for expressing type-level abstraction and constraints across modules, layered atop the Merkle-based model without modifying its core semantics.
-
-\subsection{Generic Type Aliases}
-
-Modules may define parameterized type aliases of the form:
-\[
-\texttt{type}~T\langle X_1, \ldots, X_n \rangle = \tau
-\]
-where $\tau$ may reference type parameters $X_i$. When imported, these aliases are instantiated with concrete types:
-\[
-T\langle \sigma_1, \ldots, \sigma_n \rangle
-\]
-Instantiations are resolved into fully derived types \\within the importing module.
-
-\subsection{Structural Constraints}
-
-Type parameters may be constrained by structural predicates:
-\[
-\texttt{type}~Map\langle K: \texttt{Hashable}, V \rangle = \ldots
-\]
-Here, \texttt{Hashable} denotes a required property or interface, transitively resolved through the module graph. Finalization ensures that each constraint is satisfied by evidence such as declared instances, structural matches, or subtype edges.
-
-\subsection{Finalization Semantics}
-
-Generic types are instantiated and expanded during finalization. Constraint satisfaction is resolved transitively via module inheritance, yielding deterministic, content-addressed types. The result must be fully resolved and non-parametric in the final Merkle tree.
-
-\subsection{Applications}
-
-These mechanisms enable:
-\begin{itemize}
-  \item Parameterized types (\texttt{List<T>}, \texttt{Map<K, V>}).
-  \item Generic algorithms over abstract constraints.
-  \item Interface-based modularity without coupling to implementations.
-\end{itemize}
-
-Use of generics is optional. Ecosystems lacking type-level abstraction can ignore this layer without affecting correctness or resolution semantics.
 
 \end{document}
