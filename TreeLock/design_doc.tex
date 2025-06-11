@@ -1,0 +1,145 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\title{TreeLock Design Document}
+\date{June 11, 2025}
+\author{S. C. Dunn}
+
+\definecolor{lightgray}{gray}{0.95}
+\def\lstlanguagefiles{lstlean.tex}
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{lightgray},
+  frame=single,
+  breaklines=true,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}
+}
+
+\begin{document}
+
+\maketitle
+
+\section*{Project: TreeLock}
+\textbf{Subtitle:} \textit{Merkle Tree-Based Inheritance in Decentralized Module Systems}
+
+\section{Data Structure Design}
+
+\subsection*{Tree Representation}
+\begin{itemize}[noitemsep]
+  \item \textbf{Decision:} Use a binary tree with \texttt{leaf} and \texttt{node} constructors.
+  \item \textbf{Rationale:} Maps cleanly to Merkle semantics; enables recursive, verifiable hashing.
+\end{itemize}
+
+\begin{lstlisting}[language=lean]
+inductive Tree (α : Type)
+  | leaf : α → Tree α
+  | node : Tree α → Tree α → Tree α
+\end{lstlisting}
+
+\section{Hashing Strategy}
+
+\subsection*{Polymorphic Tree Hashing}
+\begin{itemize}[noitemsep]
+  \item \textbf{Decision:} Define \texttt{Hashable (Tree α)} given \texttt{Hashable α}.
+  \item \textbf{Encoding:}
+    \begin{itemize}
+      \item \texttt{leaf x} $\to$ \texttt{hash [0x00, x]}
+      \item \texttt{node l r} $\to$ \texttt{hash [0x01, hash l, hash r]}
+    \end{itemize}
+  \item \textbf{Rationale:} Ensures structure is encoded cryptographically.
+\end{itemize}
+
+\section{List to Tree Conversion}
+
+\subsection*{Balanced Conversion}
+\begin{itemize}[noitemsep]
+  \item \textbf{Decision:} Split list in half recursively rather than flattening.
+  \item \textbf{Rationale:} Guarantees balanced Merkle structure and efficient updates.
+\end{itemize}
+
+\begin{lstlisting}[language=Lean]
+def listToTree : List Hash → Tree Hash
+  | []      => Tree.leaf defaultHash
+  | [x]     => Tree.leaf x
+  | xs      =>
+      let mid := xs.length / 2
+      Tree.node (listToTree xs[..mid]) (listToTree xs[mid..])
+\end{lstlisting}
+
+\section{Merkle Hash Function}
+
+\subsection*{Tree-Based Merkle Hash}
+\begin{itemize}[noitemsep]
+  \item \textbf{Decision:} Canonical definition via \texttt{Tree Hash}.
+  \item \textbf{Rationale:} Simplifies termination and proof strategy.
+\end{itemize}
+
+\begin{lstlisting}[language=Lean]
+def merkleHash (xs : List Hash) : Hash :=
+  hash (listToTree xs)
+\end{lstlisting}
+
+\section{Formal Verification in Lean}
+
+\subsection*{Theorems Proven}
+\begin{itemize}[noitemsep]
+  \item \texttt{merkleHash [] = defaultHash}
+  \item \texttt{merkleHash [x] = hash [0x00, x]}
+  \item \texttt{merkleHash [x, y] = hash [0x01, hash [0x00, x], hash [0x00, y]]}
+\end{itemize}
+
+\subsection*{Pending}
+\begin{itemize}[noitemsep]
+  \item Proof of consistency: \texttt{hash (listToTree xs) = merkleHash xs}
+  \item General correctness of listToTree structure
+\end{itemize}
+
+\section{Module System Integration (Tangl)}
+
+\subsection*{Override as Tree Update}
+\begin{itemize}[noitemsep]
+  \item \textbf{Decision:} Symbol overrides modeled as tree mutations.
+  \item \textbf{Rationale:} Maintains integrity and traceability.
+\end{itemize}
+
+\subsection*{Recursive Lineage Tracking}
+\begin{itemize}[noitemsep]
+  \item \textbf{Decision:} TreeHash used as provenance signature.
+  \item \textbf{Rationale:} Enables reproducibility and diffing.
+\end{itemize}
+
+\section{Hash Encoding Format}
+
+\begin{itemize}[noitemsep]
+  \item \textbf{Leaf tag:} \texttt{0x00}
+  \item \textbf{Node tag:} \texttt{0x01}
+  \item \textbf{Rationale:} Avoids collisions and domain confusion.
+\end{itemize}
+
+\section{Prototyping and Implementation}
+
+\begin{itemize}[noitemsep]
+  \item \textbf{Language:} Lean 4 (for executable proofs)
+  \item \textbf{Prototype Frontend:} Tangl (mentioned only in prototype scope)
+\end{itemize}
+
+\section{Documentation and Paper Integration}
+
+\begin{itemize}[noitemsep]
+  \item \textbf{Appendix:} Appendix B describes formal connections to module systems.
+  \item \textbf{Main Text:} Figures visualize tree hashing. Notation consistent across Lean + prose.
+\end{itemize}
+
+\section{Open Questions}
+
+\begin{itemize}
+  \item Generalization to non-binary or variadic branching trees
+  \item Efficient diffing and reconciliation between tree versions
+  \item Reusable tree patch or override languages
+\end{itemize}
+
+\end{document}
