@@ -1,0 +1,58 @@
+TODO: OOPSLA Submission Checklist
+
+Main Paper
+- [x] Abstract summarizes novelty + contributions
+- [x] Introduction has motivation, intuition, contributions
+- [x] System design clearly explains modules, finalization
+- [x] Merkle tree inheritance is visualized or well-explained
+- [x] Symbol resolution & override traces are formally specified
+- [x] Tangl is mentioned only as a prototype
+- [x] Reference finalization pseudocode appendix
+- [x] Limitations & future work are addressed
+- [x] Add worked example of symbol resolution
+
+Writing & Style
+- [x] Figures, tables, algorithms have captions + are referenced
+- [x] Consistent terminology throughout
+
+Lean Theorems
+- [ ] treeHash_deterministic theorem (merged from treeHash_consistent and merkleHash_deterministic)
+- [ ] merkleHash_correct theorem
+- [ ] List-to-tree correctness lemma
+- [ ] Compositionality theorem for tree hashing
+- [ ] Optional: Override trace properties in symbolic form
+
+Supplementary Material
+- [x] Update Appendix D - Connection to Existing Module Calculi
+- [x] Cross-references (`xr`) from main paper work correctly
+- [x] Mention supplement in intro or conclusion
+
+Formal Material (if included)
+- [x] Notation is consistent + explained
+- [ ] Determinism, compositionality, override safety proven (link to Lean proofs)
+- [ ] Worked example of formal resolution flow included
+
+Recursive Groups
+- [ ] Add “Recursive Module Groups” subsection to System Design
+- [ ] Illustrate atomic grouping with a tiny mutual-recursion example
+
+Limitations & Formalization Updates
+- [ ] Update Limitations section to note recursion is contained to atomic groups
+- [ ] Add a note in Formalization section about SCC collapse before Merkle hashing
+
+Evaluation (Optional if space permits)
+- [ ] Summarize synthetic benchmarks briefly in main text
+- [ ] Table or bullet summary of performance patterns
+
+Bibliography
+- [ ] Every citation used in-text
+- [ ] DOIs, authors, venues are correct
+- [x] Key systems/tools/work cited (e.g. mixins, semver, WASM)
+
+Final Checks
+- [x] No `??` citations or references
+- [ ] No overfull/underfull hboxes
+- [x] PDF compiles cleanly with `sigplan` class
+- [x] PDF under ACM 20MB limit
+- [ ] Unused `\label{}` or unnecessary labels removed
+- [ ] Consistent hyphen vs en-dash usage
