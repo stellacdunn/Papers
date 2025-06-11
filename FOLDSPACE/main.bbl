@@ -1,0 +1,23 @@
+\begin{thebibliography}{1}
+
+\bibitem{Chang2025}
+Yuan-chin~Ivan Chang.
+\newblock A survey: Potential dimensionality reduction methods.
+\newblock {\em arXiv preprint arXiv:2502.11036}, 2025.
+
+\bibitem{Ma2019}
+Qiang Ma, Suwen Ge, Danyang He, Darshan Thaker, and Iddo Drori.
+\newblock Combinatorial optimization by graph pointer networks and hierarchical reinforcement learning.
+\newblock {\em arXiv preprint arXiv:1911.04936}, 2019.
+
+\bibitem{Sahai2017}
+Tuhin Sahai, Adrian Ziessler, Stefan Klus, and Michael Dellnitz.
+\newblock Continuous relaxations for the traveling salesman problem.
+\newblock {\em arXiv preprint arXiv:1702.05224}, 2017.
+
+\bibitem{Zhang2022}
+Zeyang Zhang, Ziwei Zhang, Xin Wang, and Wenwu Zhu.
+\newblock Learning to solve travelling salesman problem with hardness-adaptive curriculum.
+\newblock In {\em Proceedings of the AAAI Conference on Artificial Intelligence}, volume~36, pages 4265--4273, 2022.
+
+\end{thebibliography}

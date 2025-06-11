@@ -1,0 +1,67 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\title{Linearizing the Traveling Salesman Problem via High-Dimensional Spatial Transformations}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+The Traveling Salesman Problem (TSP) is a well-known NP-hard problem in combinatorial optimization. Traditional approaches operate within the native 2D Euclidean space, searching for a minimal Hamiltonian cycle among all permutations of cities. This proposal presents a novel approach: reframe the TSP as a problem of transforming the 2D spatial configuration of cities into a higher-dimensional space where optimal or near-optimal tours correspond to configurations where the cities map to overlapping or closely aligned points. This alignment allows edges to be drawn across the "folds" of the space, which are then mapped back to a 2D tour. The number and complexity of these transformations becomes the primary heuristic, shifting the problem to solving an $n$-dimensional TSP in an $(n+m)$-dimensional transformation space.
+\end{abstract}
+
+\section{Introduction and Motivation}
+Solving the TSP efficiently remains a key challenge in theoretical computer science and operations research. While many heuristic and approximation methods exist, they generally operate directly within the permutation space of city orders. This proposal takes a geometric perspective: if cities could be transformed such that they map to the same or nearly the same location in a higher-dimensional space, the optimal visiting order may become more directly accessible by tracing connections across the space's structural folds.
+
+This approach explores whether transforming and analyzing the TSP instance in an augmented spatial domain can yield new insights and methods for constructing efficient tours.
+
+\section{Problem Formulation}
+Let $G = (V, E)$ be a complete undirected graph where $V$ represents cities as points in $\mathbb{R}^2$. Define a space of transformations $\mathcal{F}$, where each $f \in \mathcal{F}$ maps $\mathbb{R}^2 \rightarrow \mathbb{R}^{n+m}$, embedding the problem into a higher-dimensional manifold.
+
+We aim to identify a transformation $f$ such that $f(V)$ maps cities into the same or nearby points in $\mathbb{R}^{n+m}$. This allows edges to be drawn across the spatial "folds," producing a simplified tour order that, when mapped back to $\mathbb{R}^2$, approximates a short tour.
+
+\section{Methodology}
+\begin{itemize}
+  \item \textbf{Transformation Generation:} Explore transformations that fold or embed the 2D space into higher dimensions, including linear projections, manifold learning, and learned neural embeddings.
+  \item \textbf{Point Coalescence:} Design transformations such that cities coalesce in the higher-dimensional space (i.e., $\|f(v_i) - f(v_j)\| \approx 0$).
+  \item \textbf{Linearity/Clustering Metric:} Define a score $L(f(V))$ based on how compactly the cities are clustered in the transformation space.
+  \item \textbf{Optimization Objective:}
+  \[
+  \min_{f \in \mathcal{F}} \alpha \cdot \text{TourLength}(f^{-1}(\pi_f)) + \beta \cdot \text{Complexity}(f)
+  \]
+  where $\pi_f$ is derived by connecting overlapping or closely-aligned points.
+  \item \textbf{Search Algorithm:} Employ evolutionary strategies, gradient-based methods, or reinforcement learning to explore $\mathcal{F}$.
+  \item \textbf{Final Optimization Layer:} Apply manifold embedding techniques (e.g., Procrustes relaxation or orthogonal manifold optimization) to refine the candidate tour derived from high-dimensional transformation. Represent the tour as a point on a matrix manifold and optimize within that space to locally minimize path length.
+  \item \textbf{Evaluation:} Compare against standard solvers (e.g., Concorde, LKH) on TSPLIB instances and randomly generated graphs.
+\end{itemize}
+
+\section{Research Questions}
+\begin{enumerate}
+  \item Can spatial transformations that coalesce cities in high-dimensional space simplify the TSP in 2D?
+  \item How does the dimensionality $n+m$ affect the quality of the inverse-mapped tours?
+  \item How does transformation complexity relate to tour optimality?
+  \item How well does this method generalize to large-scale or noisy TSP instances?
+  \item Can manifold optimization improve the final tour quality when applied to the inverse-mapped path?
+\end{enumerate}
+
+\section{Expected Contributions}
+\begin{itemize}
+  \item A new geometric and transformational framework for reinterpreting and solving the TSP.
+  \item A family of transformation-based heuristics leveraging spatial coalescence in higher dimensions.
+  \item Integration of manifold optimization methods for local refinement.
+  \item Comparative empirical analysis with traditional heuristics.
+\end{itemize}
+
+\section{Future Directions}
+This framework may extend to variants such as the asymmetric TSP, TSP with time windows, or vehicle routing problems. Additionally, exploring learned transformations (e.g., via deep autoencoders) could improve adaptability to problem-specific structures. The idea of coalescing points to enable edge formation across folds may also inform future work in manifold learning and combinatorial optimization.
+
+\section*{References}
+(To be compiled based on related literature on TSP, dimensionality reduction, and geometric optimization.)
+
+\end{document}
