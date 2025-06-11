@@ -1,0 +1,62 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+
+\title{TreeLock Project Roadmap}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Overview}
+TreeLock is a system for secure and efficient verification of hierarchical data structures, leveraging Merkle trees to model inheritance and resolution in decentralized module systems. The core paper is in its second draft and currently under review. Remaining milestones focus on mechanizing proofs and finalizing the Tangl prototype.
+
+\section*{Completed Milestones}
+\begin{itemize}[label=--]
+  \item System design completed: Tree-based Merkle inheritance structure defined.
+  \item Paper: second draft written and under review.
+  \item Core theorems written and partially proven in Lean.
+  \item Module resolution semantics designed.
+  \item Writing plan and supplementary material (e.g., Appendix B) scaffolded.
+\end{itemize}
+
+\section*{Remaining Tasks}
+
+\subsection*{1. Proof Mechanization (Lean)}
+\begin{itemize}[label=--]
+  \item Formalize correctness of `listToTree` and `treeHash`.
+  \item Prove core TreeLock properties:
+    \begin{itemize}
+      \item Determinism of resolution
+      \item Override safety
+      \item Compositionality of inheritance
+    \end{itemize}
+  \item Formalize resolution and finalization semantics.
+\end{itemize}
+
+\subsection*{2. Tangl Prototype}
+\begin{itemize}[label=--]
+  \item Implement TreeLock's inheritance resolution algorithm.
+  \item Parse and interpret module declarations with content-addressable hashing.
+  \item Build a minimal REPL or CLI for demonstrating inheritance and override resolution.
+  \item Optional: visualization tool for module trees and resolution traces.
+\end{itemize}
+
+\subsection*{3. Final Paper Polish}
+\begin{itemize}[label=--]
+  \item Add cross-references and clean up formatting.
+  \item Include final figures (e.g., tree diagrams, resolution trace examples).
+  \item Verify citation completeness and metadata.
+  \item Prepare final PDF under ACM SIGPLAN guidelines.
+\end{itemize}
+
+\section*{Timeline (Tentative)}
+\begin{itemize}[label=--]
+  \item \textbf{Week 1–2:} Complete Lean proof mechanization
+  \item \textbf{Week 3–4:} Finalize Tangl prototype
+  \item \textbf{Week 5:} Paper final polish, appendix updates, and submission
+\end{itemize}
+
+\end{document}
